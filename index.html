@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+		
+<html>
+<head lang="it">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Random User - Generator</title>
+	<!-- Bootswatch theme link (change dynamically) -->
+	<link id="theme-link" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css">
+	<!-- Bootstrap Icons for star, mail, etc. -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+	<!-- Optional local CSS kept minimal (layout fallback) -->
+	<link rel="stylesheet" href="./css/index.css" />
+	<!-- jQuery (requested) -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- JSZip per creare file ZIP lato client (locale) -->
+	<script src="./js/libs/Stuk-jszip-v3.10.1-3-g643714a/dist/jszip.min.js"></script>
+	<script src="./js/libs/axios@1.13.min.js"></script>
+	<script src="./js/libs/libreria.js"></script>
+	<script defer src="./js/index.js"></script>
+</head>
+
+<body>
+	<div class="container my-4">
+		<header class="d-flex align-items-center justify-content-between mb-3 main-header rounded-3 p-3">
+			<div>
+				<h1 class="h3 mb-0">🎲 Random User Generator</h1>
+				<small class="text-muted">Genera e visualizza utenti casuali da tutto il mondo</small>
+			</div>
+			<div class="d-flex align-items-center gap-2">
+				<!-- Theme dropdown (solo chiaro / scuro) -->
+				<div class="dropdown">
+					<button class="btn btn-outline-secondary dropdown-toggle" id="themeDropdown" aria-expanded="false">Tema</button>
+					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
+						<li><a class="dropdown-item theme-option" href="#" data-theme="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css">Chiaro</a></li>
+						<li><a class="dropdown-item theme-option" href="#" data-theme="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css">Scuro</a></li>
+					</ul>
+				</div>
+				<!-- Favorites dropdown -->
+				<div class="dropdown">
+					<button class="btn btn-outline-primary dropdown-toggle" id="favoritesDropdown" aria-expanded="false">Preferiti</button>
+					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="favoritesDropdown" id="favorites-menu">
+						<li class="dropdown-item text-muted">Nessun preferito salvato</li>
+					</ul>
+				</div>
+			</div>
+		</header>
+		<section class="controls-section bg-light p-3 rounded mb-3">
+			<div class="row g-2 align-items-center">
+				<div class="col-12 col-md-5">
+					<label for="slider-results" class="form-label">Numero di persone: <strong id="slider-value">20</strong></label>
+					<input type="range" id="slider-results" min="1" max="50" value="20" class="form-range">
+				</div>
+				<div class="col-12 col-md-3">
+					<label class="form-label d-block">Genere</label>
+					<div class="btn-group" role="group" aria-label="Gender">
+						<input type="radio" class="btn-check" name="gender" id="g-all" autocomplete="off" value="all" checked>
+						<label class="btn btn-outline-secondary" for="g-all">Tutti</label>
+						<input type="radio" class="btn-check" name="gender" id="g-male" autocomplete="off" value="male">
+						<label class="btn btn-outline-secondary" for="g-male">Uomini</label>
+						<input type="radio" class="btn-check" name="gender" id="g-female" autocomplete="off" value="female">
+						<label class="btn btn-outline-secondary" for="g-female">Donne</label>
+					</div>
+				</div>
+				<div class="col-12 col-md-4">
+					<label class="form-label d-block">Nazionalità</label>
+					<div class="d-flex flex-wrap gap-2" id="nat-container">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="BR" id="nat-br">
+							<label class="form-check-label" for="nat-br">Brasile</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="DE" id="nat-de">
+							<label class="form-check-label" for="nat-de">Germania</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="IT" id="nat-it">
+							<label class="form-check-label" for="nat-it">Italia</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="ES" id="nat-es">
+							<label class="form-check-label" for="nat-es">Spagna</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="FR" id="nat-fr">
+							<label class="form-check-label" for="nat-fr">Francia</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="GB" id="nat-gb">
+							<label class="form-check-label" for="nat-gb">Regno Unito</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="US" id="nat-us">
+							<label class="form-check-label" for="nat-us">Stati Uniti</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="CA" id="nat-ca">
+							<label class="form-check-label" for="nat-ca">Canada</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="AU" id="nat-au">
+							<label class="form-check-label" for="nat-au">Australia</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="NL" id="nat-nl">
+							<label class="form-check-label" for="nat-nl">Paesi Bassi</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="SE" id="nat-se">
+							<label class="form-check-label" for="nat-se">Svezia</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-12 text-end">
+					<button id="btn-load" class="btn btn-primary">Carica Utenti</button>
+				</div>
+			</div>
+		</section>
+		<div id="loading" class="text-center my-3" style="display:none;">
+			<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+			<div class="mt-2">Caricamento...</div>
+		</div>
+		<div id="error-message" class="alert alert-danger" role="alert" style="display:none;"></div>
+		<section class="pagination-section d-flex align-items-center justify-content-center mb-2" style="display:none;" id="pagination-section">
+			<div class="btn-group" role="group">
+				<button id="btn-first" class="btn btn-outline-secondary" title="Prima pagina">⏮️</button>
+				<button id="btn-prev" class="btn btn-outline-secondary" title="Pagina precedente">◀️</button>
+			</div>
+			<div class="mx-3" id="page-info">Pagina 1</div>
+			<div class="btn-group" role="group">
+				<button id="btn-next" class="btn btn-outline-secondary" title="Pagina successiva">▶️</button>
+				<button id="btn-last" class="btn btn-outline-secondary" title="Ultima pagina">⏭️</button>
+			</div>
+		</section>
+		<div class="text-center mb-3">
+			<button id="btn-download-all" class="btn btn-outline-secondary btn-sm">
+				<i class="bi bi-filetype-json me-1"></i>Scarica JSON (tutte le persone)
+			</button>
+		</div>
+		<section class="cards-section" id="cards-section">
+			<div id="cards-container" class="row g-3">
+				<!-- Card utenti generate via JavaScript -->
+			</div>
+			<div id="no-results" class="alert alert-secondary text-center mt-3" role="alert" style="display:none;">
+				Nessun risultato trovato. Modifica i filtri e riprova.
+			</div>
+		</section>
+
+</body>
+</html>

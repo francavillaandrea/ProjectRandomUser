@@ -1,0 +1,163 @@
+
+/* Stili custom: il grosso del layout è gestito da Bootstrap / Bootswatch.
+ * Colore cardine: blu acceso (#0d6efd), usato come accento ovunque.
+ */
+
+:root {
+    --accent-color: #0d6efd;
+}
+
+body {
+    /* Sfumatura leggera che funziona con temi chiari e scuri */
+    background: radial-gradient(circle at top left, rgba(13, 110, 253, 0.2), transparent 55%),
+                radial-gradient(circle at bottom right, rgba(32, 201, 151, 0.18), transparent 55%);
+}
+
+h1 {
+    margin-bottom: 0.25rem;
+    color: var(--accent-color);
+}
+
+.main-header {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.06), rgba(13, 110, 253, 0.0));
+    border: 1px solid rgba(13, 110, 253, 0.18);
+}
+
+.controls-section {
+    border-left: 4px solid var(--accent-color);
+    background: rgba(255, 255, 255, 0.9);
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.controls-section:hover {
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.pagination-section .btn-outline-secondary {
+    border-color: rgba(13, 110, 253, 0.35);
+    color: var(--accent-color);
+}
+
+.pagination-section .btn-outline-secondary:hover,
+.pagination-section .btn-outline-secondary:focus {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+/* Card utente */
+.user-card {
+    height: 100%;
+    border: 1px solid rgba(13, 110, 253, 0.18);
+    box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.06);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(6px) scale(0.99);
+    animation: card-in 0.35s ease forwards;
+}
+
+.user-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.12);
+    border-color: rgba(13, 110, 253, 0.5);
+}
+
+.user-card.highlight {
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.55);
+}
+
+.user-card .card-header {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.15), rgba(13, 110, 253, 0.02));
+}
+
+.user-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.35);
+    border: 3px solid #fff;
+}
+
+.user-meta {
+    font-size: 0.9rem;
+}
+
+.user-meta .bi {
+    color: var(--accent-color);
+}
+
+.user-actions .btn-outline-success {
+    border-color: rgba(25, 135, 84, 0.45);
+}
+
+.user-actions .btn-outline-success .bi {
+    margin-right: 0.15rem;
+}
+
+@keyframes card-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Badge-like look per i checkbox delle nazionalità */
+#nat-container .form-check {
+    padding: 0.15rem 0.35rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+/* Icone bandiera accanto alla nazionalità */
+.flag-icon {
+    width: 24px;
+    height: 18px;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 576px) {
+    .flag-icon {
+        width: 18px;
+        height: 13px;
+    }
+
+    #page-info {
+        font-size: 0.85rem;
+    }
+
+    .controls-section .form-label {
+        font-size: 0.9rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .controls-section,
+    .user-card {
+        transition: none;
+        animation: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .controls-section {
+        transition: none;
+    }
+}
+
+/* Dropdown senza Bootstrap JS - gestione classe show */
+.dropdown-menu {
+    display: none;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
