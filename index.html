@@ -1,150 +1,207 @@
-﻿<!DOCTYPE html>
-		
-<html>
-<head lang="it">
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Random User - Generator</title>
-	<!-- Bootswatch theme link (change dynamically) -->
-	<link id="theme-link" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css">
-	<!-- Bootstrap Icons for star, mail, etc. -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-	<!-- Optional local CSS kept minimal (layout fallback) -->
-	<link rel="stylesheet" href="./css/index.css" />
-	<!-- jQuery (requested) -->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<!-- JSZip per creare file ZIP lato client (locale) -->
-	<script src="./js/libs/Stuk-jszip-v3.10.1-3-g643714a/dist/jszip.min.js"></script>
-	<script src="./js/libs/axios@1.13.min.js"></script>
-	<script src="./js/libs/libreria.js"></script>
-	<script defer src="./js/index.js"></script>
+<!DOCTYPE html>
+<html lang="it" data-bs-theme="light">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Random User Generator — Enhanced</title>
+
+  <!-- Bootstrap (tema base; il theme switcher sovrascrive con data-bs-theme) -->
+  <link id="theme-link" rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- Bootstrap JS (for modal/toast handling) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Css -->
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/animations.css">
+
+  <!-- Js -->
+  <script defer src="./js/script.js"></script>
+  <script defer src="./js/theme.js"></script>
+  <script defer src="./js/libs/libreria.js"></script>
+  <script defer src="./js/libs/axios@1.13.min.js"></script>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
-	<div class="container my-4">
-		<header class="d-flex align-items-center justify-content-between mb-3 main-header rounded-3 p-3">
-			<div>
-				<h1 class="h3 mb-0">🎲 Random User Generator</h1>
-				<small class="text-muted">Genera e visualizza utenti casuali da tutto il mondo</small>
-			</div>
-			<div class="d-flex align-items-center gap-2">
-				<!-- Theme dropdown (solo chiaro / scuro) -->
-				<div class="dropdown">
-					<button class="btn btn-outline-secondary dropdown-toggle" id="themeDropdown" aria-expanded="false">Tema</button>
-					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
-						<li><a class="dropdown-item theme-option" href="#" data-theme="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css">Chiaro</a></li>
-						<li><a class="dropdown-item theme-option" href="#" data-theme="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css">Scuro</a></li>
-					</ul>
-				</div>
-				<!-- Favorites dropdown -->
-				<div class="dropdown">
-					<button class="btn btn-outline-primary dropdown-toggle" id="favoritesDropdown" aria-expanded="false">Preferiti</button>
-					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="favoritesDropdown" id="favorites-menu">
-						<li class="dropdown-item text-muted">Nessun preferito salvato</li>
-					</ul>
-				</div>
-			</div>
-		</header>
-		<section class="controls-section bg-light p-3 rounded mb-3">
-			<div class="row g-2 align-items-center">
-				<div class="col-12 col-md-5">
-					<label for="slider-results" class="form-label">Numero di persone: <strong id="slider-value">20</strong></label>
-					<input type="range" id="slider-results" min="1" max="50" value="20" class="form-range">
-				</div>
-				<div class="col-12 col-md-3">
-					<label class="form-label d-block">Genere</label>
-					<div class="btn-group" role="group" aria-label="Gender">
-						<input type="radio" class="btn-check" name="gender" id="g-all" autocomplete="off" value="all" checked>
-						<label class="btn btn-outline-secondary" for="g-all">Tutti</label>
-						<input type="radio" class="btn-check" name="gender" id="g-male" autocomplete="off" value="male">
-						<label class="btn btn-outline-secondary" for="g-male">Uomini</label>
-						<input type="radio" class="btn-check" name="gender" id="g-female" autocomplete="off" value="female">
-						<label class="btn btn-outline-secondary" for="g-female">Donne</label>
-					</div>
-				</div>
-				<div class="col-12 col-md-4">
-					<label class="form-label d-block">Nazionalità</label>
-					<div class="d-flex flex-wrap gap-2" id="nat-container">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="BR" id="nat-br">
-							<label class="form-check-label" for="nat-br">Brasile</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="DE" id="nat-de">
-							<label class="form-check-label" for="nat-de">Germania</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="IT" id="nat-it">
-							<label class="form-check-label" for="nat-it">Italia</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="ES" id="nat-es">
-							<label class="form-check-label" for="nat-es">Spagna</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="FR" id="nat-fr">
-							<label class="form-check-label" for="nat-fr">Francia</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="GB" id="nat-gb">
-							<label class="form-check-label" for="nat-gb">Regno Unito</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="US" id="nat-us">
-							<label class="form-check-label" for="nat-us">Stati Uniti</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="CA" id="nat-ca">
-							<label class="form-check-label" for="nat-ca">Canada</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="AU" id="nat-au">
-							<label class="form-check-label" for="nat-au">Australia</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="NL" id="nat-nl">
-							<label class="form-check-label" for="nat-nl">Paesi Bassi</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="SE" id="nat-se">
-							<label class="form-check-label" for="nat-se">Svezia</label>
-						</div>
-					</div>
-				</div>
-				<div class="col-12 text-end">
-					<button id="btn-load" class="btn btn-primary">Carica Utenti</button>
-				</div>
-			</div>
-		</section>
-		<div id="loading" class="text-center my-3" style="display:none;">
-			<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
-			<div class="mt-2">Caricamento...</div>
-		</div>
-		<div id="error-message" class="alert alert-danger" role="alert" style="display:none;"></div>
-		<section class="pagination-section d-flex align-items-center justify-content-center mb-2" style="display:none;" id="pagination-section">
-			<div class="btn-group" role="group">
-				<button id="btn-first" class="btn btn-outline-secondary" title="Prima pagina">⏮️</button>
-				<button id="btn-prev" class="btn btn-outline-secondary" title="Pagina precedente">◀️</button>
-			</div>
-			<div class="mx-3" id="page-info">Pagina 1</div>
-			<div class="btn-group" role="group">
-				<button id="btn-next" class="btn btn-outline-secondary" title="Pagina successiva">▶️</button>
-				<button id="btn-last" class="btn btn-outline-secondary" title="Ultima pagina">⏭️</button>
-			</div>
-		</section>
-		<div class="text-center mb-3">
-			<button id="btn-download-all" class="btn btn-outline-secondary btn-sm">
-				<i class="bi bi-filetype-json me-1"></i>Scarica JSON (tutte le persone)
-			</button>
-		</div>
-		<section class="cards-section" id="cards-section">
-			<div id="cards-container" class="row g-3">
-				<!-- Card utenti generate via JavaScript -->
-			</div>
-			<div id="no-results" class="alert alert-secondary text-center mt-3" role="alert" style="display:none;">
-				Nessun risultato trovato. Modifica i filtri e riprova.
-			</div>
-		</section>
+    <div id="app">
+        <nav class="topbar p-2">
+            <div class="container d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="brand d-flex align-items-center gap-2">
+                        <i class="bi bi-person-circle fs-4"></i>
+                        <div>
+                            <div style="font-size:0.95rem">RandomUser</div>
+                            <small class="muted">Generator • Demo</small>
+                        </div>
+                    </div>
+                    <div class="d-none d-md-flex gap-2 align-items-center ms-3">
+                        <a href="#cards" class="muted">Esplora</a>
+                        <a href="#controls" class="muted">Filtri</a>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="mode-switch btn-group" role="group" aria-label="Tema">
+                        <button class="btn btn-sm btn-outline-secondary" id="light" title="Tema chiaro"><i class="bi bi-sun-fill"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary" id="dark" title="Tema scuro"><i class="bi bi-moon-fill"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary" id="system" title="Tema sistema"><i class="bi bi-circle-half"></i></button>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" id="btn-refresh-hero" title="Nuova persona"><i class="bi bi-shuffle"></i></button>
+                </div>
+            </div>
+        </nav>
+        <main class="container">
+            <section class="hero fade-in" id="hero">
+                <div class="avatar" id="hero-avatar" aria-hidden="true">
+                    <img src="https://via.placeholder.com/320x320.png?text=..." alt="Avatar persona">
+                </div>
+                <div class="info">
+                    <h2 id="hero-name">Caricamento utente...</h2>
+                    <div class="meta">
+                        <div id="hero-email" class="muted d-flex align-items-center gap-2"><i class="bi bi-envelope"></i> —</div>
+                        <div id="hero-username" class="muted d-flex align-items-center gap-2"><i class="bi bi-person-badge"></i> —</div>
+                    </div>
+                    <div class="demographics mt-2">
+                        <span class="chip" id="hero-gender" title="Genere"><i class="bi bi-gender-ambiguous"></i> —</span>
+                        <span class="chip" id="hero-nat" title="Nazionalità"><i class="bi bi-globe"></i> —</span>
+                        <span class="chip" id="hero-age" title="Età"><i class="bi bi-calendar-event"></i> —</span>
+                    </div>
+                    <div class="actions mt-3">
+                        <button class="btn btn-outline-secondary btn-sm" id="btn-hero-details"><i class="bi bi-info-circle"></i> Dettagli</button>
+                        <button class="btn btn-primary btn-sm" id="btn-hero-fav"><i class="bi bi-heart"></i> Aggiungi ai preferiti</button>
+                    </div>
+                </div>
+                <div class="center-overlay" aria-hidden="true"></div>
+            </section>
+            <div class="controls-panel" id="controls">
+                <div class="controls">
+                    <h5 class="mb-2">Filtri e caricamento</h5>
+                    <div class="row row-gap align-items-center">
+                        <div class="col-12 col-md-6 mb-2">
+                            <label class="form-label">Numero risultati: <strong id="slider-value">10</strong></label>
+                            <input type="range" id="slider-results" min="1" max="50" value="10" class="form-range">
+                        </div>
+                        <div class="col-12 col-md-6 mb-2">
+                            <label class="form-label d-block">Genere</label>
+                            <div class="btn-group" role="group" aria-label="Gender">
+                                <input type="radio" class="btn-check" name="gender" id="g-all" autocomplete="off" value="all" checked>
+                                <label class="btn btn-outline-secondary btn-sm" for="g-all">Tutti</label>
+                                <input type="radio" class="btn-check" name="gender" id="g-male" autocomplete="off" value="male">
+                                <label class="btn btn-outline-secondary btn-sm" for="g-male">Uomini</label>
+                                <input type="radio" class="btn-check" name="gender" id="g-female" autocomplete="off" value="female">
+                                <label class="btn btn-outline-secondary btn-sm" for="g-female">Donne</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Nazionalità (seleziona):</label>
+                            <div class="d-flex flex-wrap gap-2" id="nat-container"></div>
+                        </div>
+                        <div class="col-12 mt-2 d-flex gap-2 justify-content-end">
+                            <button id="btn-load" class="btn btn-success"><i class="bi bi-cloud-download"></i> Carica</button>
+                            <button id="btn-clear-filters" class="btn btn-outline-secondary"><i class="bi bi-x-circle"></i> Reset</button>
+                        </div>
+                    </div>
+                </div>
+                <aside class="side-panel">
+                    <div class="controls p-2">
+                        <label class="form-label">Cerca per nome / email</label>
+                        <div class="input-group">
+                            <input id="search" class="form-control form-control-sm" placeholder="es. Mario Rossi" aria-label="Cerca">
+                            <button class="btn btn-outline-secondary btn-sm" id="btn-search"><i class="bi bi-search"></i></button>
+                        </div>
+                        <label class="form-label mt-2">Ordina</label>
+                        <select id="sort" class="form-select form-select-sm">
+                            <option value="none">Nessuno</option>
+                            <option value="name-asc">Nome A→Z</option>
+                            <option value="name-desc">Nome Z→A</option>
+                            <option value="nat-asc">Nazionalità A→Z</option>
+                        </select>
+                    </div>
+                    <div class="controls p-2">
+                        <strong>Statistiche Risultati</strong>
+                        <div id="stats-container" class="mt-2"></div>
+                    </div>
+                    <div class="controls p-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong>Preferiti</strong>
+                            <button class="btn btn-sm btn-outline-danger" id="clear-fav">Svuota</button>
+                        </div>
+                        <div class="favorites-list" id="favorites-list">
+                            <div class="text-muted small">Nessun preferito ancora</div>
+                        </div>
+                    </div>
+                    <div class="controls p-2 text-center">
+                        <small class="muted">Tips</small>
+                        <p class="small mt-2">Premi <span class="kbd">Dettagli</span> su una card per vedere info complete.<br> Usa <span class="kbd">Carica</span> per ottenere più record dall'API.</p>
+                    </div>
+                </aside>
+            </div>
+            <div id="active-filters-container" class="d-flex flex-wrap gap-2 mb-3"></div>
+            <section id="cards" class="fade-in">
+                <div id="cards-container" aria-live="polite"></div>
+                <div class="pager mt-3" id="pager" style="display:none">
+                    <div class="btn-group">
+                        <button id="btn-first" class="btn btn-outline-secondary page-btn">⏮</button>
+                        <button id="btn-prev" class="btn btn-outline-secondary page-btn">◀</button>
+                    </div>
+                    <div id="page-info" style="min-width:120px; text-align:center">Pagina 1</div>
+                    <div class="btn-group">
+                        <button id="btn-next" class="btn btn-outline-secondary page-btn">▶</button>
+                        <button id="btn-last" class="btn btn-outline-secondary page-btn">⏭</button>
+                    </div>
+                </div>
+                <div id="no-results" class="no-results mt-3" style="display:none">Nessun risultato trovato</div>
+            </section>
+        </main>
+        <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+                <div class="modal-content p-3">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="avatar-lg">
+                            <img id="modal-avatar" src="" alt="Avatar dettagli">
+                        </div>
+                        <div>
+                            <h5 id="modal-name"></h5>
+                            <div class="muted" id="modal-email"></div>
+                            <div class="mt-2" id="modal-natgender"></div>
+                        </div>
+                        <div class="text-end">
+                            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Chiudi</button>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="modal-body-details" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="jsonViewerModal" tabindex="-1" aria-labelledby="jsonViewerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="jsonViewerModalLabel">JSON Viewer</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body bg-dark">
+                        <pre><code id="json-viewer-content" class="language-json text-white"></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" id="btn-back-to-top" class="btn btn-lg btn-primary rounded-circle" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000;"><i class="bi bi-arrow-up"></i></a>
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastPlacement"></div>
 
+    </div>
 </body>
+
 </html>
