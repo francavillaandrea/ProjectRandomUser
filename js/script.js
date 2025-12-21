@@ -2,6 +2,10 @@
 
 $(function () {
     const FAV_KEY = "ru-favorites";
+    const SLIDER_KEY = "ru-slider-position";
+    const GENDER_KEY = "ru-gender-filter";
+    const NAT_KEY = "ru-nat-filters";
+
     const NATIONALITIES = {
         'AU': 'Australia', 'BR': 'Brasile', 'CA': 'Canada', 'CH': 'Svizzera',
         'DE': 'Germania', 'DK': 'Danimarca', 'ES': 'Spagna', 'FI': 'Finlandia',
@@ -26,7 +30,7 @@ $(function () {
 
     function debounce(func, delay) {
         let timeout;
-        return function(...args) {
+        return function (...args) {
             const context = this;
             clearTimeout(timeout);
             timeout = setTimeout(() => func.apply(context, args), delay);
@@ -72,7 +76,7 @@ $(function () {
         URL.revokeObjectURL(url);
         showToast(`Dati di ${user.name.first} salvati.`);
     }
-    
+
     function showJsonViewer(user) {
         if (!user) return;
         const jsonString = JSON.stringify(user, null, 2);
@@ -84,8 +88,8 @@ $(function () {
         return ajax.sendRequest('GET', '/api/', params)
             .then(response => response.data.results)
             .catch(err => {
-                ajax.errore(err); // Use the error handling from libreria.js
-                return []; // Always return an empty array on error to prevent breaking subsequent logic
+                ajax.errore(err);
+                return [];
             });
     }
 
@@ -111,7 +115,7 @@ $(function () {
         if (!params.nat) delete params.nat;
 
         fetchUsers(params).then(users => {
-            if (!users) return; 
+            if (!users) return;
             state.users = users;
             state.page = 1;
             applyFiltersAndRender();
@@ -120,7 +124,7 @@ $(function () {
             $('#btn-load').prop('disabled', false).html('<i class="bi bi-cloud-download"></i> Carica');
         });
     }
-    
+
     function applyFiltersAndRender() {
         applySearch();
         applySort();
@@ -128,7 +132,7 @@ $(function () {
         renderPage();
         renderActiveFilters();
     }
-    
+
     function applySearch() {
         const q = $("#search").val().toLowerCase().trim();
         state.filtered = !q ? [...state.users] : state.users.filter(u => `${u.name.first} ${u.name.last} ${u.email}`.toLowerCase().includes(q));
@@ -138,41 +142,45 @@ $(function () {
         const v = $("#sort").val();
         if (v === "none") { return; }
         state.filtered.sort((a, b) => {
-            if (v === "name-asc") return `${a.name.first} ${a.name.last}`.localeCompare(`${b.name.first} ${b.name.last}`);
-            if (v === "name-desc") return `${b.name.first} ${b.name.last}`.localeCompare(`${a.name.first} ${a.name.last}`);
-            if (v === "nat-asc") return a.nat.localeCompare(b.nat);
+            if (a && b && a.name && b.name) {
+                if (v === "name-asc") return `${a.name.first} ${a.name.last}`.localeCompare(`${b.name.first} ${b.name.last}`);
+                if (v === "name-desc") return `${b.name.first} ${b.name.last}`.localeCompare(`${a.name.first} ${a.name.last}`);
+                if (v === "nat-asc") return a.nat.localeCompare(b.nat);
+            }
             return 0;
         });
     }
 
-    function isFav(uuid) { return state.favorites.includes(uuid); }
+    function isFav(uuid) {
+        return state.favorites.some(favUser => favUser && favUser.login && favUser.login.uuid === uuid);
+    }
 
     function saveFavs() {
         localStorage.setItem(FAV_KEY, JSON.stringify(state.favorites));
         renderFavorites();
     }
 
-    function toggleFavorite(uuid) {
-        const idx = state.favorites.indexOf(uuid);
-        const user = [...state.users, state.hero].find(u => u && u.login.uuid === uuid);
+    function toggleFavorite(userToAdd) {
+        if (!userToAdd || !userToAdd.login) return;
+        const idx = state.favorites.findIndex(favUser => favUser && favUser.login && favUser.login.uuid === userToAdd.login.uuid);
         if (idx >= 0) {
             state.favorites.splice(idx, 1);
-            if(user) showToast(`'${user.name.first}' rimosso dai preferiti!`);
+            showToast(`'${userToAdd.name.first}' rimosso dai preferiti!`);
         } else {
-            state.favorites.push(uuid);
-            if(user) showToast(`'${user.name.first}' aggiunto ai preferiti!`);
+            state.favorites.push(userToAdd);
+            showToast(`'${userToAdd.name.first}' aggiunto ai preferiti!`);
         }
         saveFavs();
     }
-    
+
     function loadHero(filters) {
         $('#btn-refresh-hero').prop('disabled', true).addClass('rotating');
-        
+
         const currentFilters = filters || {
             gender: $("input[name=gender]:checked").val(),
             nat: $(".nat:checked").map((_, el) => el.value).get()
         };
-        
+
         const params = { results: 1, gender: currentFilters.gender, nat: currentFilters.nat.join(','), inc: 'gender,name,location,email,login,dob,phone,cell,picture,nat,registered' };
         if (params.gender === 'all') delete params.gender;
         if (!params.nat) delete params.nat;
@@ -185,7 +193,7 @@ $(function () {
             $("#hero-name").text(`${user.name.first} ${user.name.last}`);
             $("#hero-email").html(`<i class="bi bi-envelope"></i> ${user.email}`);
             $("#hero-username").html(`<i class="bi bi-person-badge"></i> @${user.login.username}`);
-            
+
             const genderIcon = user.gender === 'male' ? 'bi-gender-male' : 'bi-gender-female';
             $("#hero-gender").html(`<i class="bi ${genderIcon}"></i> ${GENDERS[user.gender] || user.gender}`);
             $("#hero-nat").html(`<i class="bi bi-globe"></i> ${NATIONALITIES[user.nat] || user.nat}`);
@@ -199,9 +207,9 @@ $(function () {
         if (!state.hero) return;
         const isHeroFav = isFav(state.hero.login.uuid);
         $("#btn-hero-fav").html(isHeroFav ? '<i class="bi bi-heart-fill"></i> Rimuovi' : '<i class="bi bi-heart"></i> Aggiungi').toggleClass("btn-primary", !isHeroFav).toggleClass("btn-outline-danger", isHeroFav);
-        
+
         $("#hero-name .bi-heart-fill").remove();
-        if(isHeroFav) {
+        if (isHeroFav) {
             $("#hero-name").append(' <i class="bi bi-heart-fill text-danger"></i>');
         }
     }
@@ -260,6 +268,7 @@ $(function () {
         if (!pageUsers.length) return;
 
         pageUsers.forEach((u, index) => {
+            if (!u || !u.login) return;
             const fav = isFav(u.login.uuid);
             const $card = $('<article>').addClass('user-card fade-in').attr('data-id', u.login.uuid).css('animation-delay', `${index * 50}ms`).append(
                 $('<div>').addClass('uimg').append($('<img>').attr('src', u.picture.medium).attr('alt', 'Avatar')),
@@ -279,14 +288,17 @@ $(function () {
 
     function renderFavorites() {
         const list = $("#favorites-list").empty();
-        const favUsers = [...new Map(state.favorites.map(id => [id, [...state.users, state.hero].find(u => u && u.login.uuid === id)]).filter(([, u]) => u)).values()];
+        const favUsers = state.favorites;
+
         if (!favUsers.length) { list.html('<div class="text-muted small p-2">Nessun preferito.</div>'); return; }
+
         favUsers.forEach(u => {
+            if (!u || !u.login) return;
             const $favItem = $('<div>').addClass('fav-item mb-2').append(
                 $('<img>').attr('src', u.picture.thumbnail).attr('alt', 'Avatar'),
                 $('<div>').addClass('small flex-grow-1').text(`${u.name.first} ${u.name.last}`),
                 $('<div>').addClass('btn-group').append(
-                    $('<button>').addClass('btn btn-sm btn-outline-primary btn-view-json').attr('data-id', u.login.uuid).attr('title', 'Vedi JSON').html('<i class="bi bi-file-code"></i>'),
+                    $('<button>').addClass('btn btn-sm btn-outline-secondary btn-details').attr('data-id', u.login.uuid).attr('title', 'Dettagli').html('<i class="bi bi-info-circle"></i>'),
                     $('<button>').addClass('btn btn-sm btn-outline-danger btn-remove-fav').attr('data-id', u.login.uuid).attr('title', 'Rimuovi').html('<i class="bi bi-trash"></i>')
                 )
             );
@@ -306,8 +318,8 @@ $(function () {
 
         container.html('').append(
             $('<ul>').addClass('list-unstyled small').append(
-                $('<li>').html(`<i class="bi bi-gender-male"></i> ${GENDERS['male']}: <b>${(males/total*100).toFixed(0)}%</b>`),
-                $('<li>').html(`<i class="bi bi-gender-female"></i> ${GENDERS['female']}: <b>${(females/total*100).toFixed(0)}%</b>`),
+                $('<li>').html(`<i class="bi bi-gender-male"></i> ${GENDERS['male']}: <b>${(males / total * 100).toFixed(0)}%</b>`),
+                $('<li>').html(`<i class="bi bi-gender-female"></i> ${GENDERS['female']}: <b>${(females / total * 100).toFixed(0)}%</b>`),
                 $('<li>').html(`<i class="bi bi-cake2"></i> Età media: <b>${avgAge}</b>`),
                 $('<li>').html(`<i class="bi bi-globe"></i> Top Nazionalità: <b>${NATIONALITIES[topNat] || topNat}</b> (${natCounts[topNat]})`)
             )
@@ -322,14 +334,14 @@ $(function () {
         $("#btn-first, #btn-prev").prop("disabled", state.page === 1);
         $("#btn-last, #btn-next").prop("disabled", state.page === state.totalPages);
     }
-    
+
     function showUserDetails(user) {
         if (!user) return;
         const modal = $('#detailsModal');
         modal.find("#modal-avatar").attr("src", user.picture.large);
         modal.find("#modal-name").text(`${user.name.first} ${user.name.last}`);
         modal.find("#modal-email").text(user.email);
-        
+
         const genderIcon = user.gender === 'male' ? 'bi-gender-male' : 'bi-gender-female';
         modal.find("#modal-natgender").html('').append(
             $('<p>').addClass('mb-0 d-flex align-items-center gap-2').html(`<i class="bi ${genderIcon}"></i> ${GENDERS[user.gender] || user.gender}`),
@@ -380,12 +392,12 @@ $(function () {
             }
             body.append($sectionDiv);
         }
-        
+
         modal.find('.btn-extra').remove();
         const $jsonBtn = $('<button>').addClass('btn btn-sm btn-outline-info btn-extra me-2').html('<i class="bi bi-file-code"></i> Vedi JSON').on('click', () => showJsonViewer(user));
         const $saveBtn = $('<button>').addClass('btn btn-sm btn-primary btn-extra').html('<i class="bi bi-download"></i> Salva JSON').on('click', () => saveUserAsJson(user));
         modal.find('button[data-bs-dismiss="modal"]').before($jsonBtn).before($saveBtn);
-        
+
         new bootstrap.Modal(modal[0]).show();
     }
 
@@ -399,22 +411,29 @@ $(function () {
             loadUsers(filters);
         }, 400);
 
-        $(document).on("input", "#slider-results", function () { 
-            $("#slider-value").text($(this).val()); 
+        $(document).on("input", "#slider-results", function () {
+            const value = $(this).val();
+            $("#slider-value").text(value);
+            localStorage.setItem(SLIDER_KEY, value);
             debouncedLoad();
         });
-        $(document).on('change', 'input[name=gender]', debouncedLoad);
+        $(document).on('change', 'input[name=gender]', function () {
+            localStorage.setItem(GENDER_KEY, $(this).val());
+            debouncedLoad();
+        });
         $(document).on('change', '.nat', () => {
+            const nats = $(".nat:checked").map((_, el) => el.value).get();
+            localStorage.setItem(NAT_KEY, JSON.stringify(nats));
             const filters = {
                 results: Number($("#slider-results").val()),
                 gender: $("input[name=gender]:checked").val(),
-                nat: $(".nat:checked").map((_, el) => el.value).get()
+                nat: nats
             };
             loadUsers(filters);
         });
 
         $(document).on("click", "#btn-load", () => loadUsers());
-        
+
         $(document).on("click", "#btn-refresh-hero", () => {
             const filters = {
                 gender: $("input[name=gender]:checked").val(),
@@ -423,9 +442,14 @@ $(function () {
             loadHero(filters);
         });
 
-        $(document).on("click", "#btn-hero-fav", () => { if(state.hero) { toggleFavorite(state.hero.login.uuid); updateHeroFavButton(); } });
+        $(document).on("click", "#btn-hero-fav", () => {
+            if (state.hero) {
+                toggleFavorite(state.hero); // Pass the full hero object
+                updateHeroFavButton();
+            }
+        });
         $(document).on("click", "#btn-hero-details", () => showUserDetails(state.hero));
-        
+
         const debouncedSearch = debounce(() => applyFiltersAndRender(), 350);
         $(document).on('input', '#search', debouncedSearch);
         $(document).on("change", "#sort", () => {
@@ -444,8 +468,11 @@ $(function () {
         $(document).on("click", "#cards-container .btn-fav", function (e) {
             e.stopPropagation();
             const uuid = $(this).closest(".user-card").data("id");
-            toggleFavorite(uuid);
-            $(this).toggleClass('btn-danger', isFav(uuid)).toggleClass('btn-outline-danger', !isFav(uuid)).html(isFav(uuid) ? '<i class="bi bi-heart-fill"></i>' : '<i class="bi bi-heart"></i>');
+            const user = state.users.find(u => u.login.uuid === uuid); // Find the user in the current list
+            if (user) {
+                toggleFavorite(user); // Pass the full user object
+                $(this).toggleClass('btn-danger', isFav(uuid)).toggleClass('btn-outline-danger', !isFav(uuid)).html(isFav(uuid) ? '<i class="bi bi-heart-fill"></i>' : '<i class="bi bi-heart"></i>');
+            }
         });
 
         $(document).on("click", "#cards-container .user-card", function (e) {
@@ -453,20 +480,23 @@ $(function () {
             const uuid = $(this).data("id");
             showUserDetails(state.users.find(u => u.login.uuid === uuid));
         });
-        
-        $(document).on("click", "#favorites-list .btn-remove-fav", function(e) {
+
+        $(document).on("click", "#favorites-list .btn-remove-fav", function (e) {
             e.stopPropagation();
             const uuid = $(this).data("id");
-            toggleFavorite(uuid);
+            const userToRemove = state.favorites.find(favUser => favUser.login.uuid === uuid);
+            if (userToRemove) {
+                toggleFavorite(userToRemove); // Pass the full user object
+            }
             renderPage();
             updateHeroFavButton();
         });
 
-        $(document).on("click", "#favorites-list .btn-view-json", function(e) {
+        $(document).on("click", "#favorites-list .btn-details", function (e) {
             e.stopPropagation();
             const uuid = $(this).data("id");
-            const user = [...state.users, state.hero].find(u => u && u.login.uuid === uuid);
-            if (user) showJsonViewer(user);
+            const user = state.favorites.find(favUser => favUser.login.uuid === uuid); // Directly use from favorites
+            if (user) showUserDetails(user);
         });
 
         $(document).on("click", "#clear-fav", () => {
@@ -477,32 +507,29 @@ $(function () {
                 updateHeroFavButton();
             }
         });
-        
+
         $(document).on("click", "#btn-clear-filters", () => {
+            localStorage.removeItem(SLIDER_KEY);
+            localStorage.removeItem(GENDER_KEY);
+            localStorage.removeItem(NAT_KEY);
+
             $(".nat").prop("checked", false);
             $("input[name=gender][value=all]").prop("checked", true);
-            $("#search").val(""); 
+            $("#search").val("");
             $("#sort").val("none");
-            $("#slider-results").val(10); 
+            $("#slider-results").val(10);
             $("#slider-value").text(10);
             loadUsers();
         });
 
-        $(document).on('click', '#active-filters-container button', function() {
+        $(document).on('click', '#active-filters-container button', function () {
             const type = $(this).data('filter-type');
             if (type === 'gender') {
-                $('input[name=gender][value=all]').prop('checked', true);
+                $('input[name=gender][value=all]').prop('checked', true).trigger('change');
             } else if (type === 'nat') {
                 const value = $(this).data('filter-value');
-                $(`.nat[value=${value}]`).prop('checked', false);
+                $(`.nat[value=${value}]`).prop('checked', false).trigger('change');
             }
-            
-            const filters = {
-                results: Number($("#slider-results").val()),
-                gender: $("input[name=gender]:checked").val(),
-                nat: $(".nat:checked").map((_, el) => el.value).get()
-            };
-            loadUsers(filters);
         });
 
         const backToTopButton = $('#btn-back-to-top');
@@ -516,16 +543,112 @@ $(function () {
 
         backToTopButton.on('click', (e) => {
             e.preventDefault();
-            $('html, body').animate({scrollTop: 0}, '300');
+            $('html, body').animate({ scrollTop: 0 }, '300');
         });
     }
-    
+
     function init() {
+        const savedSlider = localStorage.getItem(SLIDER_KEY);
+        if (savedSlider) {
+            $("#slider-results").val(savedSlider);
+            $("#slider-value").text(savedSlider);
+        }
+
+        const savedGender = localStorage.getItem(GENDER_KEY);
+        if (savedGender) {
+            $(`input[name=gender][value=${savedGender}]`).prop('checked', true);
+        }
+
+        const savedNats = JSON.parse(localStorage.getItem(NAT_KEY) || "[]");
+        if (savedNats.length > 0) {
+            savedNats.forEach(nat => $(`#nat-${nat.toLowerCase()}`).prop('checked', true));
+        }
+
+        // Migration for old favorites format
+        if (state.favorites.length > 0 && typeof state.favorites[0] === 'string') {
+            state.favorites = [];
+            localStorage.setItem(FAV_KEY, JSON.stringify([]));
+        }
+
         renderNationalities();
         initEventHandlers();
         loadHero();
-        loadUsers();
+        // Load favorites first if available, otherwise load random users
+        if (state.favorites.length > 0) {
+            state.users = state.favorites;
+            state.page = 1;
+            applyFiltersAndRender();
+        } else {
+            loadUsers();
+        }
     }
+
+    $(document).on("input", "#slider-results", function () {
+        const value = $(this).val();
+        const percent = (value - this.min) / (this.max - this.min);
+
+        $("#slider-value").text(value);
+        localStorage.setItem(SLIDER_KEY, JSON.stringify({ value, percent }));
+
+        debouncedLoad();
+    });
+    function saveFavs() {
+        localStorage.setItem(FAV_KEY, JSON.stringify(state.favorites));
+        renderFavorites();
+    }
+    function renderFavorites() {
+        const list = $("#favorites-list").empty();
+
+        if (!state.favorites.length) {
+            list.html('<div class="text-muted small p-2">Nessun preferito.</div>');
+            return;
+        }
+
+        state.favorites.forEach(u => {
+            if (!u || !u.login) return;
+
+            const $favItem = $('<div>').addClass('fav-item mb-2').append(
+                $('<img>').attr('src', u.picture.thumbnail),
+                $('<div>').addClass('small flex-grow-1').text(`${u.name.first} ${u.name.last}`),
+                $('<div>').addClass('btn-group').append(
+                    $('<button>')
+                        .addClass('btn btn-sm btn-outline-secondary btn-details')
+                        .attr('data-id', u.login.uuid)
+                        .html('<i class="bi bi-info-circle"></i>'),
+                    $('<button>')
+                        .addClass('btn btn-sm btn-outline-danger btn-remove-fav')
+                        .attr('data-id', u.login.uuid)
+                        .html('<i class="bi bi-trash"></i>')
+                )
+            );
+
+            list.append($favItem);
+        });
+    }
+    function init() {
+
+        const savedSlider = JSON.parse(localStorage.getItem(SLIDER_KEY));
+        if (savedSlider) {
+            $("#slider-results").val(savedSlider.value);
+            $("#slider-value").text(savedSlider.value);
+        }
+
+        const savedGender = localStorage.getItem(GENDER_KEY);
+        if (savedGender) {
+            $(`input[name=gender][value=${savedGender}]`).prop('checked', true);
+        }
+
+        const savedNats = JSON.parse(localStorage.getItem(NAT_KEY) || "[]");
+        savedNats.forEach(n => $(`#nat-${n.toLowerCase()}`).prop('checked', true));
+
+        renderNationalities();
+        initEventHandlers();
+
+        renderFavorites();   // ⭐ solo mostra i preferiti
+        loadHero();          // hero casuale
+        loadUsers();         // ⭐ utenti casuali SEMPRE
+    }
+
 
     init();
 });
