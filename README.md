@@ -1,217 +1,81 @@
 # Random User Generator
 
-Un'applicazione web interattiva e **completamente responsive** che consente di generare e visualizzare utenti casuali da tutto il mondo, con filtri avanzati e navigazione paginata.
+Un'applicazione web interattiva e **completamente responsive** che permette di generare, visualizzare e filtrare utenti casuali da tutto il mondo. Include funzionalità avanzate come la gestione dei preferiti, statistiche in tempo reale e un'interfaccia moderna con tema chiaro e scuro.
+
+<!-- Inserisci qui uno screenshot dell'applicazione -->
+![Screenshot dell'applicazione](./assets/Screenshot.png)
 
 ---
 
-### Come Usare l'App
+## ✨ Funzionalità Principali
 
-1. **Regola il numero di risultati** usando lo slider (predefinito: 20)
-2. **Seleziona il genere** con i radio button (Tutti è preselezionato)
-3. **Scegli le nazionalità** con i checkbox (Italia è preselezionata)
-4. **Clicca "Carica Utenti"** per recuperare i dati
-5. **Naviga i risultati** con i pulsanti di pagina
-
-### Parametri API
-
-L'applicazione utilizza l'API pubblica di **randomuser.me**:
-```
-GET https://randomuser.me/api/?results=N&gender=GENDER&nat=NATIONALITY_CODE
-```
-
-- **results**: Numero di risultati (massimo consigliato: 100)
-- **gender**: `male`, `female`, o omettere per "all"
-- **nat**: Codici nazionalità ISO 2 (comma-separated per più paesi)
+-   **Generazione Utenti Casuali**: Carica utenti con un click, specificando numero, genere e nazionalità.
+-   **Filtri Avanzati**:
+    -   Slider per il numero di risultati.
+    -   Filtro per genere (uomo, donna, tutti).
+    -   Selezione multipla delle nazionalità con bandiere.
+-   **Ricerca e Ordinamento**: Cerca utenti per nome/email e ordina i risultati.
+-   **Paginazione**: Naviga facilmente tra i risultati se superano il limite per pagina.
+-   **Gestione Preferiti**: Salva i tuoi utenti preferiti (persistenti nel `localStorage`).
+-   **Tema Chiaro/Scuro**: Cambia tema istantaneamente (Light, Dark, System).
+-   **Statistiche Dinamiche**: Visualizza statistiche aggregate sui risultati caricati (es. % genere, età media).
+-   **Visualizzatore Dettagli**: Apri una modale con informazioni complete su ogni utente.
+-   **Esportazione JSON**: Visualizza o scarica i dati grezzi di un utente in formato JSON.
+-   **Completamente Responsive**: Design ottimizzato per desktop, tablet e smartphone.
 
 ---
 
 ## 💻 Tecnologie Utilizzate
 
-
-## 🔧 Dettagli Implementazione
-
-### State Management (`appState`)
-```javascript
-{
-  allData: [],                 // Tutti i risultati caricati
-  currentPage: 1,              // Pagina corrente
-  itemsPerPage: 20,            // Risultati per pagina
-  selectedGender: "all",       // Filtro genere
-  selectedNationalities: [],   // Filtri nazionalità selezionati
-  totalResults: 0,             // Total results count
-  totalPages: 0,               // Calculated total pages
-  isLoading: false             // Loading state
-}
-```
-
-### Flusso Principale
-1. **Caricamento**: `loadUsers()` → API call con parametri filtrati
-2. **Salvataggio**: Dati salvati in `appState.allData`
-3. **Rendering**: `renderPage()` → Slice e display della pagina corrente
-4. **Navigazione**: Pulsanti aggiornano `currentPage` e richiamano `renderPage()`
-
-### Sanitizzazione Dati
-La funzione `escapeHtml()` previene XSS:
-- Escapa `&`, `<`, `>`, `"`, `'`
-- Applicata a tutti i dati dinamici
+| Categoria      | Tecnologia                                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------------------ |
+| **Core**       | ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)                           |
+|                | ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)                             |
+|                | ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)          |
+| **Framework**  | ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?logo=bootstrap&logoColor=white)             |
+| **Librerie JS**| ![jQuery](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=white)                       |
+|                | ![Axios](https://img.shields.io/badge/Axios-5A29E4?logo=axios&logoColor=white)                           |
+| **Design**     | [Bootswatch](https://bootswatch.com/flatly/) (Tema "Flatly")                                            |
+|                | [Bootstrap Icons](https://icons.getbootstrap.com/)                                                     |
+|                | [Google Fonts](https://fonts.google.com/specimen/Inter)                                                |
+| **API**        | [RandomUser.me](https://randomuser.me/)                                                                |
 
 ---
 
-## 📱 Responsive Design Breakpoints
+## 🚀 Come Eseguire il Progetto in Locale
 
-### Mobile (< 480px)
-- Font size ridotti
-- Grid checkbox: 1 colonna
-- Slider vertical (column layout)
-- Padding/Margin ottimizzati
-- Tabella font: 0.75rem
+Per eseguire questo progetto, non è richiesto un server web complesso. È sufficiente un qualsiasi browser moderno.
 
-### Tablet (480px - 768px)
-- Font intermedi
-- Grid checkbox: 2 colonne
-- Layout compattato
+1.  **Clona o scarica la repository:**
+    ```bash
+    git clone https://github.com/tuo-username/tuo-repository.git
+    ```
+2.  **Apri il file `index.html`:**
+    Naviga nella cartella del progetto e fai doppio click sul file `index.html` per aprirlo direttamente nel tuo browser predefinito.
 
-### Desktop (> 768px)
-- Layout pieno
-- Grid checkbox: 3 colonne
-- Font size standard
-- Hover effects completi
+> **Nota**: Alcune funzionalità, come le richieste API, potrebbero essere bloccate dalle policy di sicurezza del browser (CORS) se il file viene aperto localmente. Per un'esperienza completa, è consigliabile servire i file tramite un server locale leggero.
 
----
-
-## 🐛 Troubleshooting
-
-### "Nessun risultato trovato"
-- Verifica i filtri selezionati
-- Riduci il numero di risultati richiesti
-- Prova con "Tutti" come genere
-
-### Errore di connessione
-- Verifica la connessione internet
-- L'API potrebbe essere temporaneamente indisponibile
-- Prova in incognito (evita cache)
-
-### Tabella non visible su mobile
-- Lo slider potrebbe essere non responsive se il browser è vecchio
-- Aggiorna il browser o usa Chrome, Firefox, Safari recenti
-
----
-
-## 🌐 Deploy su AlterVista
-
-### Prerequisiti
-- Account AlterVista gratuito (www.altervista.org)
-
-### Passaggi
-
-1. **Registrati su AlterVista**
-   - Crea un account gratuito
-   - Configura il nome utente (diventerà tuo_nome.altervista.org)
-
-2. **Accedi al File Manager**
-   - Login su altervista.org
-   - Vai su "File Manager"
-
-3. **Carica i file**
-   - Crea una cartella `randomuser` (facoltativo)
-   - Carica tutti i file:
-     - `index.html`
-     - `index.css`
-     - `index.js`
-     - `libreria.js`
-     - `axios@1.13.min.js`
-
-4. **Accedi all'app**
-   - URL: `http://tuonome.altervista.org/index.html`
-   - O crea un file `index.php` con redirect
-
-### Note su AlterVista
-- CORS potrebbe bloccare l'API (prova HTTPS)
-- Se l'API è bloccata, usa un proxy CORS:
-  ```javascript
-  // In index.js, aggiungi prima di sendRequest:
-  const corsProxy = "https://cors-anywhere.herokuapp.com/";
-  ```
-
----
-
-## 📊 API Endpoints Disponibili
-
-### RandomUser.me API
+**Usare un server di sviluppo (opzionale):**
+Se hai `npm` installato, puoi usare `live-server`:
 ```bash
-# Base URL
-https://randomuser.me/api/
+# Installa live-server globalmente (se non lo hai già)
+npm install -g live-server
 
-# Esempio con tutti i parametri
-https://randomuser.me/api/?results=20&gender=male&nat=IT,DE,FR
-
-# Parametri
-- results: 1-100 (default: 1)
-- gender: male, female
-- nat: 2-letter country codes (IT, DE, GB, ES, FR, BR, etc.)
-- seed: per risultati consistenti
-
-# Response
-{
-  "results": [
-    {
-      "name": { "title", "first", "last" },
-      "email": "...",
-      "location": { "city", "state", "country" },
-      "nat": "IT"
-    }
-  ]
-}
+# Avvia il server nella cartella del progetto
+live-server
 ```
+Questo avvierà un server e aprirà l'app nel browser, risolvendo eventuali problemi di CORS.
 
 ---
 
-## 🎓 Learning Outcomes
+## 📱 Design Responsive
 
-Questo progetto insegna:
-- ✅ AJAX e fetch asincrono
-- ✅ State management in vanilla JS
-- ✅ Responsive design (mobile-first)
-- ✅ HTML semantico
-- ✅ CSS moderno (Grid, Flexbox)
-- ✅ DOM manipulation
-- ✅ Event handling
-- ✅ Sanitizzazione dati (XSS prevention)
-- ✅ UX/UI principles
-- ✅ Deploment web
+L'interfaccia è stata progettata con un approccio *mobile-first* e utilizza le classi di utility di Bootstrap e media query personalizzate per garantire un'esperienza ottimale su tutti i dispositivi.
 
----
+| Breakpoint        | Modifiche Principali                                             |
+| ----------------- | ---------------------------------------------------------------- |
+| **Mobile (<576px)** | Layout a singola colonna, font ridotti, UI compatta.             |
+| **Tablet (≥768px)** | Layout a due colonne per i controlli, card più grandi.           |
+| **Desktop (≥992px)**| Layout completo con pannello di controllo laterale e griglia estesa. |
 
-## 📝 Esercizio Originale
-
-Realizzato per corso TPSI (Tecnologie e Programmazione dei Sistemi Informatici) presso ISTITUTO TECNICO INDUSTRIALE STATALE "G." - 4° anno
-
-**Requisiti completati:**
-- ✅ Slider di selezione numero record
-- ✅ Pulsanti di navigazione (avanti, indietro, etc)
-- ✅ Radio buttons genere
-- ✅ Checkbox nazionalità (6 paesi)
-- ✅ README dettagliato
-- ✅ Design responsive
-- ✅ Deploy indicazioni
-
----
-
-## 📄 Licenza
-
-Open source per scopo educativo.
-
----
-
-## 🔗 Risorse
-
-- [RandomUser.me API](https://randomuser.me/documentation)
-- [MDN Web Docs](https://developer.mozilla.org/)
-- [CSS-Tricks](https://css-tricks.com/)
-- [AlterVista Help](https://www.altervista.org/help/)
-
----
-
-**Creato con ❤️ per imparare JavaScript e Web Development**
-
-*Last Updated: 4 Dicembre 2025*
+*Ultimo aggiornamento: 26 dicembre 2025*

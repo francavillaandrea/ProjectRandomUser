@@ -2,35 +2,35 @@
 <html lang="it" data-bs-theme="light">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Random User Generator — Enhanced</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Random User Generator</title>
 
-  <!-- Bootstrap (tema base; il theme switcher sovrascrive con data-bs-theme) -->
-  <link id="theme-link" rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Bootstrap -->
+    <link id="theme-link" rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-  <!-- Bootstrap JS (for modal/toast handling) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Css -->
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/animations.css">
+    <!-- Css -->
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/animations.css">
 
-  <!-- Js -->
-  <script defer src="./js/script.js"></script>
-  <script defer src="./js/theme.js"></script>
-  <script defer src="./js/libs/libreria.js"></script>
-  <script defer src="./js/libs/axios@1.13.min.js"></script>
+    <!-- Js -->
+    <script defer src="./js/script.js"></script>
+    <script defer src="./js/theme.js"></script>
+    <script defer src="./js/libs/libreria.js"></script>
+    <script defer src="./js/libs/axios@1.13.min.js"></script>
 
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-    crossorigin="anonymous"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 </head>
 
@@ -53,11 +53,15 @@
                 </div>
                 <div class="d-flex align-items-center gap-2">
                     <div class="mode-switch btn-group" role="group" aria-label="Tema">
-                        <button class="btn btn-sm btn-outline-secondary" id="light" title="Tema chiaro"><i class="bi bi-sun-fill"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary" id="dark" title="Tema scuro"><i class="bi bi-moon-fill"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary" id="system" title="Tema sistema"><i class="bi bi-circle-half"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary" id="light" title="Tema chiaro"><i
+                                class="bi bi-sun-fill"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary" id="dark" title="Tema scuro"><i
+                                class="bi bi-moon-fill"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary" id="system" title="Tema sistema"><i
+                                class="bi bi-circle-half"></i></button>
                     </div>
-                    <button class="btn btn-sm btn-outline-primary" id="btn-refresh-hero" title="Nuova persona"><i class="bi bi-shuffle"></i></button>
+                    <button class="btn btn-sm btn-outline-primary" id="btn-refresh-hero" title="Nuova persona"><i
+                            class="bi bi-shuffle"></i></button>
                 </div>
             </div>
         </nav>
@@ -69,17 +73,22 @@
                 <div class="info">
                     <h2 id="hero-name">Caricamento utente...</h2>
                     <div class="meta">
-                        <div id="hero-email" class="muted d-flex align-items-center gap-2"><i class="bi bi-envelope"></i> —</div>
-                        <div id="hero-username" class="muted d-flex align-items-center gap-2"><i class="bi bi-person-badge"></i> —</div>
+                        <div id="hero-email" class="muted d-flex align-items-center gap-2"><i
+                                class="bi bi-envelope"></i> —</div>
+                        <div id="hero-username" class="muted d-flex align-items-center gap-2"><i
+                                class="bi bi-person-badge"></i> —</div>
                     </div>
                     <div class="demographics mt-2">
-                        <span class="chip" id="hero-gender" title="Genere"><i class="bi bi-gender-ambiguous"></i> —</span>
+                        <span class="chip" id="hero-gender" title="Genere"><i class="bi bi-gender-ambiguous"></i>
+                            —</span>
                         <span class="chip" id="hero-nat" title="Nazionalità"><i class="bi bi-globe"></i> —</span>
                         <span class="chip" id="hero-age" title="Età"><i class="bi bi-calendar-event"></i> —</span>
                     </div>
                     <div class="actions mt-3">
-                        <button class="btn btn-outline-secondary btn-sm" id="btn-hero-details"><i class="bi bi-info-circle"></i> Dettagli</button>
-                        <button class="btn btn-primary btn-sm" id="btn-hero-fav"><i class="bi bi-heart"></i> Aggiungi ai preferiti</button>
+                        <button class="btn btn-outline-secondary btn-sm" id="btn-hero-details"><i
+                                class="bi bi-info-circle"></i> Dettagli</button>
+                        <button class="btn btn-primary btn-sm" id="btn-hero-fav"><i class="bi bi-heart"></i> Aggiungi ai
+                            preferiti</button>
                     </div>
                 </div>
                 <div class="center-overlay" aria-hidden="true"></div>
@@ -95,11 +104,14 @@
                         <div class="col-12 col-md-6 mb-2">
                             <label class="form-label d-block">Genere</label>
                             <div class="btn-group" role="group" aria-label="Gender">
-                                <input type="radio" class="btn-check" name="gender" id="g-all" autocomplete="off" value="all" checked>
+                                <input type="radio" class="btn-check" name="gender" id="g-all" autocomplete="off"
+                                    value="all" checked>
                                 <label class="btn btn-outline-secondary btn-sm" for="g-all">Tutti</label>
-                                <input type="radio" class="btn-check" name="gender" id="g-male" autocomplete="off" value="male">
+                                <input type="radio" class="btn-check" name="gender" id="g-male" autocomplete="off"
+                                    value="male">
                                 <label class="btn btn-outline-secondary btn-sm" for="g-male">Uomini</label>
-                                <input type="radio" class="btn-check" name="gender" id="g-female" autocomplete="off" value="female">
+                                <input type="radio" class="btn-check" name="gender" id="g-female" autocomplete="off"
+                                    value="female">
                                 <label class="btn btn-outline-secondary btn-sm" for="g-female">Donne</label>
                             </div>
                         </div>
@@ -108,8 +120,10 @@
                             <div class="d-flex flex-wrap gap-2" id="nat-container"></div>
                         </div>
                         <div class="col-12 mt-2 d-flex gap-2 justify-content-end">
-                            <button id="btn-load" class="btn btn-success"><i class="bi bi-cloud-download"></i> Carica</button>
-                            <button id="btn-clear-filters" class="btn btn-outline-secondary"><i class="bi bi-x-circle"></i> Reset</button>
+                            <button id="btn-load" class="btn btn-success"><i class="bi bi-cloud-download"></i>
+                                Carica</button>
+                            <button id="btn-clear-filters" class="btn btn-outline-secondary"><i
+                                    class="bi bi-x-circle"></i> Reset</button>
                         </div>
                     </div>
                 </div>
@@ -117,8 +131,10 @@
                     <div class="controls p-2">
                         <label class="form-label">Cerca per nome / email</label>
                         <div class="input-group">
-                            <input id="search" class="form-control form-control-sm" placeholder="es. Mario Rossi" aria-label="Cerca">
-                            <button class="btn btn-outline-secondary btn-sm" id="btn-search"><i class="bi bi-search"></i></button>
+                            <input id="search" class="form-control form-control-sm" placeholder="es. Mario Rossi"
+                                aria-label="Cerca">
+                            <button class="btn btn-outline-secondary btn-sm" id="btn-search"><i
+                                    class="bi bi-search"></i></button>
                         </div>
                         <label class="form-label mt-2">Ordina</label>
                         <select id="sort" class="form-select form-select-sm">
@@ -143,7 +159,8 @@
                     </div>
                     <div class="controls p-2 text-center">
                         <small class="muted">Tips</small>
-                        <p class="small mt-2">Premi <span class="kbd">Dettagli</span> su una card per vedere info complete.<br> Usa <span class="kbd">Carica</span> per ottenere più record dall'API.</p>
+                        <p class="small mt-2">Premi <span class="kbd">Dettagli</span> su una card per vedere info
+                            complete.<br> Usa <span class="kbd">Carica</span> per ottenere più record dall'API.</p>
                     </div>
                 </aside>
             </div>
@@ -185,7 +202,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="jsonViewerModal" tabindex="-1" aria-labelledby="jsonViewerModalLabel" aria-hidden="true">
+        <div class="modal fade" id="jsonViewerModal" tabindex="-1" aria-labelledby="jsonViewerModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -198,7 +216,9 @@
                 </div>
             </div>
         </div>
-        <a href="#" id="btn-back-to-top" class="btn btn-lg btn-primary rounded-circle" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000;"><i class="bi bi-arrow-up"></i></a>
+        <a href="#" id="btn-back-to-top" class="btn btn-lg btn-primary rounded-circle"
+            style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000;"><i
+                class="bi bi-arrow-up"></i></a>
         <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastPlacement"></div>
 
     </div>
