@@ -48,7 +48,7 @@ Per eseguire questo progetto, non è richiesto un server web complesso. È suffi
 
 1.  **Clona o scarica la repository:**
     ```bash
-    git clone https://github.com/tuo-username/tuo-repository.git
+    https://github.com/francavillaandrea/ProjectRandomUser.git
     ```
 2.  **Apri il file `index.html`:**
     Naviga nella cartella del progetto e fai doppio click sul file `index.html` per aprirlo direttamente nel tuo browser predefinito.
