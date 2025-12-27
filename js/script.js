@@ -644,9 +644,9 @@ $(function () {
         renderNationalities();
         initEventHandlers();
 
-        renderFavorites();   // ⭐ solo mostra i preferiti
-        loadHero();          // hero casuale
-        loadUsers();         // ⭐ utenti casuali SEMPRE
+        renderFavorites();
+        loadHero();
+        loadUsers();
     }
 
 
