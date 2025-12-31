@@ -7,7 +7,7 @@ Un'applicazione web interattiva e **completamente responsive** che permette di g
 
 ---
 
-## ✨ Funzionalità Principali
+##  Funzionalità Principali
 
 -   **Generazione Utenti Casuali**: Carica utenti con un click, specificando numero, genere e nazionalità.
 -   **Filtri Avanzati**:
@@ -25,7 +25,7 @@ Un'applicazione web interattiva e **completamente responsive** che permette di g
 
 ---
 
-## 💻 Tecnologie Utilizzate
+##  Tecnologie Utilizzate
 
 | Categoria      | Tecnologia                                                                                             |
 | -------------- | ------------------------------------------------------------------------------------------------------ |
@@ -42,7 +42,7 @@ Un'applicazione web interattiva e **completamente responsive** che permette di g
 
 ---
 
-## 🚀 Come Eseguire il Progetto in Locale
+##  Come Eseguire il Progetto in Locale
 
 Per eseguire questo progetto, non è richiesto un server web complesso. È sufficiente un qualsiasi browser moderno.
 
@@ -68,7 +68,7 @@ Questo avvierà un server e aprirà l'app nel browser, risolvendo eventuali prob
 
 ---
 
-## 📱 Design Responsive
+##  Design Responsive
 
 L'interfaccia è stata progettata con un approccio *mobile-first* e utilizza le classi di utility di Bootstrap e media query personalizzate per garantire un'esperienza ottimale su tutti i dispositivi.
 
@@ -78,4 +78,4 @@ L'interfaccia è stata progettata con un approccio *mobile-first* e utilizza le 
 | **Tablet (≥768px)** | Layout a due colonne per i controlli, card più grandi.           |
 | **Desktop (≥992px)**| Layout completo con pannello di controllo laterale e griglia estesa. |
 
-*Ultimo aggiornamento: 26 dicembre 2025*
+*Ultimo aggiornamento: 31 dicembre 2025*
